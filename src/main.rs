@@ -40,16 +40,29 @@ fn main() {
         Vector2::new(374.0, 302.0),
     ];
 
+    // ----------------------------------------------------------------
+    // Polígono 3 (triángulo) - relleno verde oliva, línea blanca
+    // ----------------------------------------------------------------
+    let polygon3: [Vector2; 3] = [
+        Vector2::new(377.0, 249.0),
+        Vector2::new(411.0, 197.0),
+        Vector2::new(436.0, 249.0),
+    ];
+
 
     // --- Relleno (scanline con regla even-odd) ---
     fill_polygon(&mut framebuffer, polygon1.as_slice(), Color::GOLD);
 
     fill_polygon(&mut framebuffer, polygon2.as_slice(), Color::ORANGERED);
 
+    fill_polygon(&mut framebuffer, polygon3.as_slice(), Color::OLIVE);
+
+
     // --- Líneas / bordes ---
     framebuffer.set_current_color(Color::WHITE);
     draw_poligon(&mut framebuffer, polygon1.as_slice());
     draw_poligon(&mut framebuffer, polygon2.as_slice());
+    draw_poligon(&mut framebuffer, polygon3.as_slice());
 
     let output_file = "out.bmp";
     framebuffer.render_to_file(output_file);
