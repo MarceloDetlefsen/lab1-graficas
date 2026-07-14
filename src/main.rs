@@ -30,12 +30,26 @@ fn main() {
         Vector2::new(193.0, 383.0),
     ];
 
+    // ----------------------------------------------------------------
+    // Polígono 2 - relleno naranja, línea blanca
+    // ----------------------------------------------------------------
+    let polygon2: [Vector2; 4] = [
+        Vector2::new(321.0, 335.0),
+        Vector2::new(288.0, 286.0),
+        Vector2::new(339.0, 251.0),
+        Vector2::new(374.0, 302.0),
+    ];
+
+
     // --- Relleno (scanline con regla even-odd) ---
     fill_polygon(&mut framebuffer, polygon1.as_slice(), Color::GOLD);
+
+    fill_polygon(&mut framebuffer, polygon2.as_slice(), Color::ORANGERED);
 
     // --- Líneas / bordes ---
     framebuffer.set_current_color(Color::WHITE);
     draw_poligon(&mut framebuffer, polygon1.as_slice());
+    draw_poligon(&mut framebuffer, polygon2.as_slice());
 
     let output_file = "out.bmp";
     framebuffer.render_to_file(output_file);
