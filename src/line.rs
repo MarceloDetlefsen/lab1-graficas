@@ -19,24 +19,21 @@ pub fn line(
     let mut err = dx - dy;
     let color = framebuffer.current_color;
 
-    // Una línea de 1px de grosor es frágil: si la arista es horizontal o
-    // vertical, el borde vive en una sola fila/columna y puede desaparecer
-    // casi por completo cuando la imagen se reescala o comprime (por
-    // ejemplo, al subirla a git, en una miniatura, o en el visor que use
-    // quien la revise). Las líneas diagonales no sufren esto porque ya
-    // ocupan varias filas/columnas por su naturaleza. Para evitarlo,
-    // engrosamos el trazo 1px extra en la dirección perpendicular al avance
-    // dominante de la línea.
-    let thicken_vertical = dx >= dy; // línea más horizontal -> engrosar en y
-    let thicken_horizontal = dy >= dx; // línea más vertical -> engrosar en x
-
+    // El relleno (fill.rs) calcula el borde de cada fila con intersecciones
+    // en punto flotante, mientras que esta línea usa Bresenham sobre
+    // coordenadas ya redondeadas a enteros. Son dos aproximaciones
+    // independientes de la MISMA arista, así que en ciertas filas/columnas
+    // -sobre todo en diagonales de pendiente baja, las "descendentes"-
+    // pueden no coincidir exactamente en qué píxel es el límite, dejando
+    // que el relleno se asome 1px más allá de donde quedó el trazo de la
+    // línea (fondo visible). Para cubrir ese posible desfase de 1px sin
+    // importar la dirección de la arista, en vez de engrosar solo hacia un
+    // lado, pintamos un bloque de 3x3 alrededor de cada punto del trazo.
     loop {
-        framebuffer.set_pixel(x0, y0, color);
-        if thicken_vertical {
-            framebuffer.set_pixel(x0, y0 + 1, color);
-        }
-        if thicken_horizontal {
-            framebuffer.set_pixel(x0 + 1, y0, color);
+        for ddy in -1..=1 {
+            for ddx in -1..=1 {
+                framebuffer.set_pixel(x0 + ddx, y0 + ddy, color);
+            }
         }
 
         if x0 == x1 && y0 == y1 {
